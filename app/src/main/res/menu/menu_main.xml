@@ -13,7 +13,7 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/open_app_list"
-        android:title="@string/open_app_list"
+        android:title="no longer exists"
         app:showAsAction="never" />
     <item
         android:id="@+id/current_to_window"

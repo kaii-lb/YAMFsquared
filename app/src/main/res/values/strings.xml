@@ -1,27 +1,27 @@
 <resources>
-    <string name="app_name">YAMF</string>
+    <string name="app_name">YAMF^2</string>
 
-    <string name="details">details</string>
-    <string name="unknown_error">unknown error</string>
-    <string name="activated">activated</string>
-    <string name="need_reboot">need reboot</string>
-    <string name="not_activated">not activated</string>
+    <string name="details">More Details</string>
+    <string name="unknown_error">Unknown Error</string>
+    <string name="activated">Module is Activated!</string>
+    <string name="need_reboot">Version change, reboot required.</string>
+    <string name="not_activated">Module is not activated.</string>
     <string name="need_reboot_message">Existing windows are fine\nBut new window may make system crash</string>
-    <string name="reboot">reboot</string>
-    <string name="settings">settings</string>
-    <string name="open_count">open count</string>
+    <string name="reboot">Reboot</string>
+    <string name="settings">Settings</string>
+    <string name="open_count">Open Count</string>
     <string name="new_window">new window</string>
-    <string name="open_app_list">open app list</string>
     <string name="telegram_channel">Telegram channel</string>
     <string name="donate">donate</string>
-    <string name="back_desc">click: back\nlong click: home</string>
+    <string name="back_desc">back</string>
     <string name="rotate_desc">click: rotate\nlong click: lock/unlock auto rotaote</string>
-    <string name="fullscreen_desc">click: fullscreen\nlong click: hang up, double click to resume</string>
-    <string name="close_desc">click: close\nlong click: app list</string>
-    <string name="xposeddescription">free window for AOSP-like systems</string>
+    <string name="minimize_desc">minimize</string>
+    <string name="fullscreen_desc">fullscreen</string>
+    <string name="close_desc">close</string>
+    <string name="xposeddescription">freeform window for AOSP-like systems</string>
     <string name="info_system_version">System version</string>
-    <string name="open_with_yamf">Open with YAMF</string>
+    <string name="open_with_yamf">Freeform</string>
     <string name="enter_window">enter window</string>
-    <string name="build_type">build type</string>
+    <string name="build_type">Build type</string>
     <string name="reset_all_window">reset all window</string>
 </resources>

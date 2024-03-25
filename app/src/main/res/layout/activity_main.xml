@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:theme="@style/Theme.Material3.DynamicColors.DayNight">
 
     <LinearLayout
         android:id="@+id/ll"
@@ -17,13 +18,13 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/mcv_status"
-            style="@style/Widget.Material3.CardView.Elevated"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:outlineAmbientShadowColor="?colorPrimary"
             android:outlineSpotShadowColor="?colorPrimary"
             android:stateListAnimator="@null"
             app:cardBackgroundColor="?colorPrimary"
+            app:cardCornerRadius="10dp"
             app:cardElevation="6dp"
             app:cardPreventCornerOverlap="false">
 
@@ -72,7 +73,8 @@
             android:id="@+id/mcv_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="10dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -90,8 +92,7 @@
                     android:id="@+id/tv_openCount"
                     style="@style/DeviceInfoDialogValue"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="-1" />
+                    android:layout_height="wrap_content" />
 
                 <com.google.android.material.textview.MaterialTextView
                     style="@style/DeviceInfoDialogLabel"
@@ -121,53 +122,78 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-        <LinearLayout
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <include layout="@layout/window_app" />
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="10dp">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_margin="16dp"
+                android:baselineAligned="true"
+                android:gravity="fill_horizontal"
+                android:orientation="horizontal">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/back_desc"
-                    app:drawableStartCompat="@drawable/ic_arrow_back_24"
-                    app:drawableTint="?colorOnBackground" />
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/rotate_desc"
-                    app:drawableStartCompat="@drawable/ic_screen_rotation_alt_24"
-                    app:drawableTint="?colorOnBackground" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/minimize_desc"
+                        android:textAlignment="center"
+                        android:textIsSelectable="false"
+                        android:textStyle="bold"
+                        app:drawableStartCompat="@drawable/minimize"
+                        app:drawableTint="?colorOnBackground" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/fullscreen_desc"
-                    app:drawableStartCompat="@drawable/ic_fullscreen_24"
-                    app:drawableTint="?colorOnBackground" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/back_desc"
+                        android:textIsSelectable="false"
+                        android:textStyle="bold"
+                        app:drawableStartCompat="@drawable/back"
+                        app:drawableTint="?colorOnBackground" />
+                </LinearLayout>
 
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/close_desc"
-                    app:drawableStartCompat="@drawable/ic_close_24"
-                    app:drawableTint="?colorOnBackground" />
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="click: force show ime (not recommended as it change floating window flag)"
-                    app:drawableStartCompat="@drawable/ic_keyboard"
-                    app:drawableTint="?colorOnBackground" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/fullscreen_desc"
+                        android:textIsSelectable="false"
+                        android:textStyle="bold"
+                        app:drawableStartCompat="@drawable/maximize"
+                        app:drawableTint="?colorOnBackground" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/close_desc"
+                        android:textIsSelectable="false"
+                        android:textStyle="bold"
+                        app:drawableStartCompat="@drawable/ic_close_24"
+                        app:drawableTint="?colorOnBackground" />
+                </LinearLayout>
+
             </LinearLayout>
-        </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
     </LinearLayout>
 </ScrollView>

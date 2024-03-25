@@ -9,14 +9,11 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.IPackageManagerHidden
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.PixelFormat
 import android.graphics.SurfaceTexture
-import android.graphics.drawable.BitmapDrawable
 import android.hardware.display.VirtualDisplay
-import android.os.Build
 import android.os.SystemClock
 import android.util.Log
 import android.util.TypedValue
@@ -34,7 +31,6 @@ import android.view.TextureView
 import android.view.View
 import android.view.WindowManager
 import android.view.WindowManagerHidden
-import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import android.window.TaskSnapshot
@@ -42,14 +38,11 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.view.updateLayoutParams
 import androidx.dynamicanimation.animation.FlingAnimation
 import androidx.dynamicanimation.animation.flingAnimationOf
-import androidx.wear.widget.RoundedDrawable
 import com.github.kyuubiran.ezxhelper.utils.argTypes
 import com.github.kyuubiran.ezxhelper.utils.args
 import com.github.kyuubiran.ezxhelper.utils.getObject
-import com.github.kyuubiran.ezxhelper.utils.getObjectAs
 import com.github.kyuubiran.ezxhelper.utils.invokeMethod
 import com.google.android.material.color.MaterialColors
-import io.github.duzhaokun123.yamf.BuildConfig
 import io.github.duzhaokun123.yamf.R
 import io.github.duzhaokun123.yamf.common.getAttr
 import io.github.duzhaokun123.yamf.common.onException
@@ -60,10 +53,10 @@ import io.github.duzhaokun123.yamf.xposed.utils.Instances
 import io.github.duzhaokun123.yamf.xposed.utils.RunMainThreadQueue
 import io.github.duzhaokun123.yamf.xposed.utils.TipUtil
 import io.github.duzhaokun123.yamf.xposed.utils.dpToPx
-import io.github.duzhaokun123.yamf.xposed.utils.getActivityInfoCompat
 import kotlinx.coroutines.delay
 import kotlin.math.sign
 
+@Suppress("SpellCheckingInspection")
 @SuppressLint("ClickableViewAccessibility", "SetTextI18n")
 class AppWindow(val context: Context, private val densityDpi: Int, private val flags: Int, private val onVirtualDisplayCreated: ((Int) -> Unit)) :
     TextureView.SurfaceTextureListener, SurfaceHolder.Callback {
@@ -73,19 +66,19 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
     }
 
     lateinit var binding: WindowAppBinding
-    lateinit var virtualDisplay: VirtualDisplay
-    val taskStackListener = TaskStackListener()
-    val rotationWatcher = RotationWatcher()
-    val surfaceOnTouchListener = SurfaceOnTouchListener()
-    val surfaceOnGenericMotionListener = SurfaceOnGenericMotionListener()
-    var displayId = -1
-    var rotateLock = false
-    var isMini = false
-    var halfWidth = 0
-    var halfHeight = 0
+    private lateinit var virtualDisplay: VirtualDisplay
+    private val taskStackListener = TaskStackListener()
+    private val rotationWatcher = RotationWatcher()
+    private val surfaceOnTouchListener = SurfaceOnTouchListener()
+    private val surfaceOnGenericMotionListener = SurfaceOnGenericMotionListener()
+    private var displayId = -1
+    private var rotateLock = false
+    private var isMini = false
+    private var halfWidth = 0
+    private var halfHeight = 0
     lateinit var surfaceView: View
     
-    val broadcastReceiver = object : BroadcastReceiver() {
+    private val broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == ACTION_RESET_ALL_WINDOW) {
                 val lp = binding.root.layoutParams as WindowManager.LayoutParams
@@ -123,7 +116,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
         }
     }
 
-    fun doInit() {
+    private fun doInit() {
         when(YAMFManager.config.surfaceView) {
             0 -> surfaceView = TextureView(context)
             1 -> surfaceView = SurfaceView(context)
@@ -188,7 +181,6 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
                             val targetHeight = beginHeight + offsetY.toInt()
                             if (targetHeight > 0)
                                 height = targetHeight
-                            binding.tvSize.text = "${targetWidth}x$targetHeight"
                         }
                     }
                     MotionEvent.ACTION_UP -> {
@@ -221,6 +213,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
                 source = InputDevice.SOURCE_KEYBOARD
                 this.invokeMethod("setDisplayId", args(displayId), argTypes(Integer.TYPE))
             }
+
             Instances.inputManager.injectInputEvent(down, 0)
             val up = KeyEvent(
                 SystemClock.uptimeMillis(),
@@ -234,45 +227,8 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
             }
             Instances.inputManager.injectInputEvent(up, 0)
         }
-        binding.ibBack.setOnLongClickListener {
-            val down = KeyEvent(
-                SystemClock.uptimeMillis(),
-                SystemClock.uptimeMillis(),
-                KeyEvent.ACTION_DOWN,
-                KeyEvent.KEYCODE_HOME,
-                0
-            ).apply {
-                source = InputDevice.SOURCE_KEYBOARD
-                this.invokeMethod("setDisplayId", args(displayId), argTypes(Integer.TYPE))
-            }
-            Instances.inputManager.injectInputEvent(down, 0)
-            val up = KeyEvent(
-                SystemClock.uptimeMillis(),
-                SystemClock.uptimeMillis(),
-                KeyEvent.ACTION_UP,
-                KeyEvent.KEYCODE_HOME,
-                0
-            ).apply {
-                source = InputDevice.SOURCE_KEYBOARD
-                this.invokeMethod("setDisplayId", args(displayId), argTypes(Integer.TYPE))
-            }
-            Instances.inputManager.injectInputEvent(up, 0)
-            true
-        }
-        binding.ibRotate.setOnClickListener {
-            rotate(Surface.ROTATION_90)
-        }
-        binding.ibRotate.setOnLongClickListener {
-            rotateLock = rotateLock.not()
-            TipUtil.showToast("rotateLock: $rotateLock")
-            true
-        }
         binding.ibClose.setOnClickListener {
             onDestroy()
-        }
-        binding.ibClose.setOnLongClickListener {
-            AppListWindow(context, displayId)
-            true
         }
         binding.ibFullscreen.setOnClickListener {
             getTopRootTask()?.runCatching {
@@ -284,22 +240,20 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
                 binding.ibClose.callOnClick()
             }
         }
-        binding.ibFullscreen.setOnLongClickListener {
+        binding.ibMinimize.setOnClickListener {
             changeMini()
-            true
         }
-        if (YAMFManager.config.showForceShowIME) {
-            binding.ibIme.setOnClickListener {
-                val params = binding.root.layoutParams as WindowManager.LayoutParams
-                params.flags = params.flags and WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE.inv()
-                params.flags = params.flags and WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.inv()
-                Instances.windowManager.updateViewLayout(binding.root, params)
-                val imm = context.getSystemService(InputMethodManager::class.java)
-                imm.showSoftInput(binding.root, 0)
-            }
-        } else {
-            binding.ibIme.visibility = View.GONE
-        }
+//        binding.ibMinimize.setOnLongClickListener {
+//            changeMiniIcon()
+//            true
+//        }
+//
+//        binding.miniAppIcon.setOnClickListener {
+//            changeMiniIcon()
+//        }
+//        binding.miniAppIcon.setOnGenericMotionListener(surfaceOnGenericMotionListener)
+
+
         virtualDisplay = Instances.displayManager.createVirtualDisplay("yamf${System.currentTimeMillis()}", 1080, 1920, densityDpi, null, flags)
         displayId = virtualDisplay.display.displayId
         (Instances.windowManager as WindowManagerHidden).setDisplayImePolicy(displayId, if (YAMFManager.config.showImeInWindow) WindowManagerHidden.DISPLAY_IME_POLICY_LOCAL else WindowManagerHidden.DISPLAY_IME_POLICY_FALLBACK_DISPLAY)
@@ -317,11 +271,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
             }
         }
         watchRotation()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            context.registerReceiver(broadcastReceiver, IntentFilter(ACTION_RESET_ALL_WINDOW), Context.RECEIVER_EXPORTED)
-        } else {
-            context.registerReceiver(broadcastReceiver, IntentFilter(ACTION_RESET_ALL_WINDOW))
-        }
+        context.registerReceiver(broadcastReceiver, IntentFilter(ACTION_RESET_ALL_WINDOW), Context.RECEIVER_EXPORTED)
         val width = YAMFManager.config.defaultWindowWidth.dpToPx().toInt()
         val height = YAMFManager.config.defaultWindowHeight.dpToPx().toInt()
         surfaceView.updateLayoutParams {
@@ -367,33 +317,21 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
 
     private fun updateTask(taskInfo: ActivityManager.RunningTaskInfo) {
         RunMainThreadQueue.add {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S_V2 && taskInfo.isVisible.not()) {
-                delay(500) // fixme: 使用能直接确定可见性的方法
+            if (taskInfo.isVisible.not()) {
+                delay(500) // fixme: use a method that directly determines visibility
             }
-            val topActivity = taskInfo.topActivity ?: return@add
             val taskDescription = Instances.activityTaskManager.getTaskDescription(taskInfo.taskId) ?: return@add
-            val activityInfo = (Instances.iPackageManager as IPackageManagerHidden).getActivityInfoCompat(topActivity, 0, taskInfo.getObjectAs("userId")) ?: return@add
-            binding.ivIcon.setImageDrawable(RoundedDrawable().apply {
-                drawable = runCatching { taskDescription.icon }.getOrNull()?.let { BitmapDrawable(it) } ?: activityInfo.loadIcon(Instances.packageManager)
-                isClipEnabled = true
-                radius = 100
-            })
-            binding.tvLabel.text = taskDescription.label ?: activityInfo.loadLabel(Instances.packageManager)
-            if (BuildConfig.DEBUG) {
-                binding.tvLabel.text = "(${taskInfo.taskId}-$displayId) ${binding.tvLabel.text}"
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && YAMFManager.config.coloredController) {
+            if (YAMFManager.config.coloredController) {
                 val backgroundColor = taskDescription.backgroundColor
                 binding.cvApp.setCardBackgroundColor(backgroundColor)
 
-                val statusBarColor = taskDescription.statusBarColor
+                val statusBarColor = taskDescription.navigationBarColor
                 binding.rlTop.setBackgroundColor(statusBarColor)
                 val onStateBar = if (MaterialColors.isColorLight(ColorUtils.compositeColors(statusBarColor, backgroundColor)) xor ((context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES)) {
                     context.theme.getAttr(com.google.android.material.R.attr.colorOnPrimaryContainer).data
                 } else {
                     context.theme.getAttr(com.google.android.material.R.attr.colorOnPrimary).data
                 }
-                binding.tvLabel.setTextColor(onStateBar)
                 binding.ibClose.imageTintList = ColorStateList.valueOf(onStateBar)
 
                 val navigationBarColor = taskDescription.navigationBarColor
@@ -404,8 +342,8 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
                     context.theme.getAttr(com.google.android.material.R.attr.colorOnPrimary).data
                 }
                 binding.ibBack.imageTintList = ColorStateList.valueOf(onNavigationBar)
-                binding.ibRotate.imageTintList = ColorStateList.valueOf(onNavigationBar)
                 binding.ibFullscreen.imageTintList = ColorStateList.valueOf(onNavigationBar)
+                binding.ibMinimize.imageTintList = ColorStateList.valueOf(onNavigationBar)
                 binding.ibResize.imageTintList = ColorStateList.valueOf(onNavigationBar)
             }
         }
@@ -429,7 +367,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
         }
         override fun onTaskDescriptionChanged(taskInfo: ActivityManager.RunningTaskInfo) {
             if (taskInfo.getObject("displayId") == displayId) {
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S_V2 && !taskInfo.isVisible){
+                if(!taskInfo.isVisible){
                     return
                 }
                 updateTask(taskInfo)
@@ -617,7 +555,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
         virtualDisplay.surface = null
     }
 
-    val moveGestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
+    private val moveGestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
         var startX = 0
         var startY = 0
         var xAnimation: FlingAnimation? = null
@@ -672,7 +610,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
                 }, {
                     params.x.toFloat()
                 })
-                    .setStartVelocity(velocityX)
+                    .setStartVelocity(velocityX / 10)
                     .setMinValue(0F)
                     .setMaxValue(context.display!!.width.toFloat() - binding.root.width)
                 xAnimation?.start()
@@ -685,7 +623,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
                 }, {
                     params.y.toFloat()
                 })
-                    .setStartVelocity(velocityY)
+                    .setStartVelocity(velocityY / 10)
                     .setMinValue(0F)
                     .setMaxValue(context.display!!.height.toFloat() - binding.root.height)
                 yAnimation?.start()
@@ -693,7 +631,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
             return true
         }
 
-        override fun onDoubleTap(e: MotionEvent): Boolean {
+        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
             if (isMini) changeMini()
             return true
         }

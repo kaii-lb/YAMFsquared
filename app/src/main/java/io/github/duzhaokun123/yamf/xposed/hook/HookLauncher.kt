@@ -139,7 +139,7 @@ class HookLauncher : IXposedHookLoadPackage, IXposedHookZygoteInit {
                             moduleRes.getDrawable(R.drawable.ic_picture_in_picture_alt_24, null)
                                 .toBitmap()
                         ),
-                        moduleRes.getString(R.string.open_with_yamf) + if (BuildConfig.DEBUG) " ($taskId)" else "",
+                        moduleRes.getString(R.string.open_with_yamf), // + if (BuildConfig.DEBUG) " ($taskId)" else "",
                         "",
                         PendingIntent.getBroadcast(
                             AndroidAppHelper.currentApplication(),

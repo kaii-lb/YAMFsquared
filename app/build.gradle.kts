@@ -1,7 +1,7 @@
 import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import java.io.ByteArrayOutputStream
 
-val localProperties = gradleLocalProperties(rootDir)
+val localProperties = gradleLocalProperties(rootDir, providers)
 
 plugins {
     id("com.android.application")
@@ -18,7 +18,7 @@ android {
 
     defaultConfig {
         applicationId = "io.github.duzhaokun123.yamf"
-        minSdk = 31
+        minSdk = 33
         targetSdk = 34
         versionCode = 7
         versionName = "$baseVersionName-git.$gitHash${if (isDirty) "-dirty" else ""}"

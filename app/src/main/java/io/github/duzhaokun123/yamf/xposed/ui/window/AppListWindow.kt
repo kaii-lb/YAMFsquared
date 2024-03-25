@@ -150,21 +150,21 @@ class AppListWindow(val context: Context, val displayId: Int? = null) {
 
     inner class Adapter : BaseSimpleAdapter<ItemAppBinding>(context, ItemAppBinding::class.java) {
         override fun initViews(baseBinding: ItemAppBinding, position: Int) {
-            val activityInfo = showApps[position]
-            baseBinding.ll.setOnClickListener {
-                if (displayId == null)
-                    YAMFManager.createWindow(StartCmd(activityInfo.componentName, userId))
-                else
-                    startActivity(context, activityInfo.componentName, userId, displayId)
-                close()
-            }
+//            val activityInfo = showApps[position]
+//            baseBinding.ll.setOnClickListener {
+//                if (displayId == null)
+//                    YAMFManager.createWindow(StartCmd(activityInfo.componentName, userId))
+//                else
+//                    startActivity(context, activityInfo.componentName, userId, displayId)
+//                close()
+//            }
         }
 
         override fun initData(baseBinding: ItemAppBinding, position: Int) {
-            val activityInfo = showApps[position]
-            val (icon, label) = AppInfoCache.getIconLabel(activityInfo)
-            baseBinding.ivIcon.setImageDrawable(icon)
-            baseBinding.tvLabel.text = label
+//            val activityInfo = showApps[position]
+//            val (icon, label) = AppInfoCache.getIconLabel(activityInfo)
+//            baseBinding.ivIcon.setImageDrawable(icon)
+//            baseBinding.tvLabel.text = label
         }
 
         override fun getItemCount() = showApps.size
