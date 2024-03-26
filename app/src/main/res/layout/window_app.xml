@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:theme="@android:style/Theme.DeviceDefault.DayNight">
+    android:theme="@style/Theme.Material3.DayNight">
 
     <FrameLayout
         android:layout_width="wrap_content"
@@ -36,35 +36,25 @@
                 <RelativeLayout
                     android:id="@+id/rl_button"
                     android:layout_width="wrap_content"
-                    android:layout_height="15dp"
+                    android:layout_height="30dp"
                     android:layout_below="@id/surface"
                     android:layout_alignEnd="@id/surface"
                     android:layout_alignParentStart="true">
 
                     <ImageButton
                         android:id="@+id/ib_resize"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_alignWithParentIfMissing="false"
-                        android:layout_alignParentStart="false"
-                        android:layout_alignParentLeft="false"
-                        android:layout_alignParentTop="false"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="false"
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerInParent="false"
-                        android:layout_centerHorizontal="false"
-                        android:layout_gravity="bottom"
                         android:background="@null"
-                        android:baselineAlignBottom="false"
-                        android:tint="#ffffff" />
-
+                        android:contentDescription="@string/resize_desc" />
                 </RelativeLayout>
 
                 <RelativeLayout
                     android:id="@+id/rl_top"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
+                    android:layout_alignEnd="@id/surface"
                     android:paddingHorizontal="6dp">
 
                     <ImageButton
@@ -75,34 +65,30 @@
                         android:background="?android:attr/selectableItemBackground"
                         android:padding="4dp"
                         android:src="@drawable/back"
-                        android:tint="#ffffff" />
+                        android:contentDescription="@string/back_desc" />
 
                     <ImageButton
                         android:id="@+id/ib_minimize"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:layout_alignParentEnd="false"
                         android:layout_centerVertical="true"
-                        android:layout_marginStart="4dp"
-                        android:layout_toLeftOf="@id/ib_fullscreen"
+                        android:layout_toStartOf="@id/ib_fullscreen"
                         android:background="?android:attr/selectableItemBackground"
                         android:padding="4dp"
                         android:src="@drawable/minimize"
-                        android:tint="#ffffff" />
+                        android:contentDescription="@string/minimize_desc" />
 
                     <ImageButton
                         android:id="@+id/ib_fullscreen"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentEnd="false"
+                        android:layout_centerVertical="true"
                         android:layout_marginStart="4dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_toLeftOf="@id/ib_close"
+                        android:layout_toStartOf="@id/ib_close"
                         android:background="?android:attr/selectableItemBackground"
                         android:padding="4dp"
                         android:src="@drawable/maximize"
-                        android:tint="#ffffff" />
+                        android:contentDescription="@string/fullscreen_desc" />
 
                     <ImageButton
                         android:id="@+id/ib_close"
@@ -112,30 +98,26 @@
                         android:layout_centerVertical="true"
                         android:background="?android:attr/selectableItemBackground"
                         android:src="@drawable/ic_close_24"
-                        android:tint="#ffffff" />
+                        android:contentDescription="@string/close_desc" />
                 </RelativeLayout>
-
             </RelativeLayout>
-
         </com.google.android.material.card.MaterialCardView>
-
-        <!--            这东西必须撑着才不会变小 离谱-->
 
         <RelativeLayout
             android:id="@+id/v_sizePreviewer"
             android:layout_width="200dp"
-            android:layout_height="match_parent"
+            android:layout_height="300dp"
             android:layout_marginTop="28dp"
             android:background="@drawable/a_bg"
             android:elevation="5dp"
             android:visibility="gone" />
 
+        <!--            这东西必须撑着才不会变小 离谱-->
         <View
             android:id="@+id/v_supporter"
             android:layout_width="200dp"
             android:layout_height="300dp"
             android:layout_marginTop="28dp" />
-
     </FrameLayout>
 
 </FrameLayout>

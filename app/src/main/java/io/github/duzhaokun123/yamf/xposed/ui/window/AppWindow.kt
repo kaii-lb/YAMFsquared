@@ -29,6 +29,7 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.TextureView
 import android.view.View
+import android.view.WindowInsets
 import android.view.WindowManager
 import android.view.WindowManagerHidden
 import android.widget.FrameLayout
@@ -56,7 +57,6 @@ import io.github.duzhaokun123.yamf.xposed.utils.dpToPx
 import kotlinx.coroutines.delay
 import kotlin.math.sign
 
-@Suppress("SpellCheckingInspection")
 @SuppressLint("ClickableViewAccessibility", "SetTextI18n")
 class AppWindow(val context: Context, private val densityDpi: Int, private val flags: Int, private val onVirtualDisplayCreated: ((Int) -> Unit)) :
     TextureView.SurfaceTextureListener, SurfaceHolder.Callback {
@@ -71,9 +71,9 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
     private val rotationWatcher = RotationWatcher()
     private val surfaceOnTouchListener = SurfaceOnTouchListener()
     private val surfaceOnGenericMotionListener = SurfaceOnGenericMotionListener()
-    private var displayId = -1
-    private var rotateLock = false
-    private var isMini = false
+    var displayId = -1
+    var rotateLock = false
+    var isMini = false
     private var halfWidth = 0
     private var halfHeight = 0
     lateinit var surfaceView: View
@@ -213,7 +213,6 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
                 source = InputDevice.SOURCE_KEYBOARD
                 this.invokeMethod("setDisplayId", args(displayId), argTypes(Integer.TYPE))
             }
-
             Instances.inputManager.injectInputEvent(down, 0)
             val up = KeyEvent(
                 SystemClock.uptimeMillis(),
@@ -226,6 +225,31 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
                 this.invokeMethod("setDisplayId", args(displayId), argTypes(Integer.TYPE))
             }
             Instances.inputManager.injectInputEvent(up, 0)
+        }
+        binding.ibBack.setOnLongClickListener {
+            val down = KeyEvent(
+                SystemClock.uptimeMillis(),
+                SystemClock.uptimeMillis(),
+                KeyEvent.ACTION_DOWN,
+                KeyEvent.KEYCODE_HOME,
+                0
+            ).apply {
+                source = InputDevice.SOURCE_KEYBOARD
+                this.invokeMethod("setDisplayId", args(displayId), argTypes(Integer.TYPE))
+            }
+            Instances.inputManager.injectInputEvent(down, 0)
+            val up = KeyEvent(
+                SystemClock.uptimeMillis(),
+                SystemClock.uptimeMillis(),
+                KeyEvent.ACTION_UP,
+                KeyEvent.KEYCODE_HOME,
+                0
+            ).apply {
+                source = InputDevice.SOURCE_KEYBOARD
+                this.invokeMethod("setDisplayId", args(displayId), argTypes(Integer.TYPE))
+            }
+            Instances.inputManager.injectInputEvent(up, 0)
+            true
         }
         binding.ibClose.setOnClickListener {
             onDestroy()
@@ -243,16 +267,6 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
         binding.ibMinimize.setOnClickListener {
             changeMini()
         }
-//        binding.ibMinimize.setOnLongClickListener {
-//            changeMiniIcon()
-//            true
-//        }
-//
-//        binding.miniAppIcon.setOnClickListener {
-//            changeMiniIcon()
-//        }
-//        binding.miniAppIcon.setOnGenericMotionListener(surfaceOnGenericMotionListener)
-
 
         virtualDisplay = Instances.displayManager.createVirtualDisplay("yamf${System.currentTimeMillis()}", 1080, 1920, densityDpi, null, flags)
         displayId = virtualDisplay.display.displayId
@@ -318,14 +332,15 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
     private fun updateTask(taskInfo: ActivityManager.RunningTaskInfo) {
         RunMainThreadQueue.add {
             if (taskInfo.isVisible.not()) {
-                delay(500) // fixme: use a method that directly determines visibility
+                delay(500) // fixme: 使用能直接确定可见性的方法
             }
             val taskDescription = Instances.activityTaskManager.getTaskDescription(taskInfo.taskId) ?: return@add
+
             if (YAMFManager.config.coloredController) {
                 val backgroundColor = taskDescription.backgroundColor
                 binding.cvApp.setCardBackgroundColor(backgroundColor)
 
-                val statusBarColor = taskDescription.navigationBarColor
+                val statusBarColor = taskDescription.backgroundColor
                 binding.rlTop.setBackgroundColor(statusBarColor)
                 val onStateBar = if (MaterialColors.isColorLight(ColorUtils.compositeColors(statusBarColor, backgroundColor)) xor ((context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES)) {
                     context.theme.getAttr(com.google.android.material.R.attr.colorOnPrimaryContainer).data
@@ -334,7 +349,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
                 }
                 binding.ibClose.imageTintList = ColorStateList.valueOf(onStateBar)
 
-                val navigationBarColor = taskDescription.navigationBarColor
+                val navigationBarColor = taskDescription.backgroundColor
                 binding.rlButton.setBackgroundColor(navigationBarColor)
                 val onNavigationBar = if (MaterialColors.isColorLight(ColorUtils.compositeColors(navigationBarColor, backgroundColor)) xor ((context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES)) {
                     context.theme.getAttr(com.google.android.material.R.attr.colorOnPrimaryContainer).data
@@ -342,8 +357,8 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
                     context.theme.getAttr(com.google.android.material.R.attr.colorOnPrimary).data
                 }
                 binding.ibBack.imageTintList = ColorStateList.valueOf(onNavigationBar)
-                binding.ibFullscreen.imageTintList = ColorStateList.valueOf(onNavigationBar)
                 binding.ibMinimize.imageTintList = ColorStateList.valueOf(onNavigationBar)
+                binding.ibFullscreen.imageTintList = ColorStateList.valueOf(onNavigationBar)
                 binding.ibResize.imageTintList = ColorStateList.valueOf(onNavigationBar)
             }
         }
@@ -491,18 +506,18 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
     }
 
     fun forwardMotionEvent(event: MotionEvent) {
-        val pointerCoords: Array<MotionEvent.PointerCoords?> = arrayOfNulls(event.pointerCount)
+        val pointerCords: Array<MotionEvent.PointerCoords?> = arrayOfNulls(event.pointerCount)
         val pointerProperties: Array<MotionEvent.PointerProperties?> =
             arrayOfNulls(event.pointerCount)
         for (i in 0 until event.pointerCount) {
-            val oldCoords = MotionEvent.PointerCoords()
+            val oldCords = MotionEvent.PointerCoords()
             val pointerProperty = MotionEvent.PointerProperties()
-            event.getPointerCoords(i, oldCoords)
+            event.getPointerCoords(i, oldCords)
             event.getPointerProperties(i, pointerProperty)
-            pointerCoords[i] = oldCoords
-            pointerCoords[i]!!.apply {
-                x = oldCoords.x
-                y = oldCoords.y
+            pointerCords[i] = oldCords
+            pointerCords[i]!!.apply {
+                x = oldCords.x
+                y = oldCords.y
             }
             pointerProperties[i] = pointerProperty
         }
@@ -513,7 +528,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
             event.action,
             event.pointerCount,
             pointerProperties,
-            pointerCoords,
+            pointerCords,
             event.metaState,
             event.buttonState,
             event.xPrecision,
@@ -602,6 +617,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
             e1 ?: return false
             if (e1.source == InputDevice.SOURCE_MOUSE) return false
             val params = binding.root.layoutParams as WindowManager.LayoutParams
+
             runCatching {
                 if (sign(velocityX) != sign(e2.rawX - last2X)) return@runCatching
                 xAnimation = flingAnimationOf({
@@ -610,7 +626,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
                 }, {
                     params.x.toFloat()
                 })
-                    .setStartVelocity(velocityX / 10)
+                    .setStartVelocity(velocityX)
                     .setMinValue(0F)
                     .setMaxValue(context.display!!.width.toFloat() - binding.root.width)
                 xAnimation?.start()
@@ -623,7 +639,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
                 }, {
                     params.y.toFloat()
                 })
-                    .setStartVelocity(velocityY / 10)
+                    .setStartVelocity(velocityY)
                     .setMinValue(0F)
                     .setMaxValue(context.display!!.height.toFloat() - binding.root.height)
                 yAnimation?.start()
@@ -631,7 +647,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
             return true
         }
 
-        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+        override fun onDoubleTap(e: MotionEvent): Boolean {
             if (isMini) changeMini()
             return true
         }

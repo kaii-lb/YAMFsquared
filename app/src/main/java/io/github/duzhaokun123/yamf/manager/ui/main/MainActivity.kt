@@ -47,6 +47,19 @@ class MainActivity: BaseActivity<ActivityMainBinding>(ActivityMainBinding::class
         YAMFManagerProxy.registerOpenCountListener(openCountListener)
     }
 
+    override fun initViews() {
+        super.initViews()
+        baseBinding.ll.findViewById<RelativeLayout>(R.id.rl_cardRoot).addView(
+            View(this).apply {
+                setBackgroundColor(Color.BLACK)
+                id = R.id.surface
+            }, 0,
+            RelativeLayout.LayoutParams(baseBinding.ll.findViewById<View>(R.id.v_sizePreviewer).layoutParams)
+                .apply {
+                    addRule(RelativeLayout.BELOW, R.id.rl_top)
+                }
+        )
+    }
     @SuppressLint("SetTextI18n")
     override fun initData() {
         val buildTime = YAMFManagerProxy.buildTime
