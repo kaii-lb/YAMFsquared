@@ -1,12 +1,13 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.YAMF" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.YAMF" parent="Theme.Material3.DynamicColors.DayNight">
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:enforceNavigationBarContrast">false</item>
         <item name="android:windowLightNavigationBar">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:enforceStatusBarContrast">false</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
     <style name="Theme.YAMF.Window" parent="Theme.Material3.DynamicColors.DayNight" />
     <style name="DeviceInfoDialogLabel">

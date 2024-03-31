@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">YAMF^2</string>
 
-    <string name="details">Detial</string>
+    <string name="details">Details</string>
     <string name="unknown_error">Unknown Error</string>
     <string name="activated">Module Is Activated!</string>
     <string name="need_reboot">Version change, reboot required</string>
@@ -25,4 +25,7 @@
     <string name="enter_window">enter window</string>
     <string name="build_type">Build Type</string>
     <string name="reset_all_window">reset all window</string>
+    <string name="window_size_separator">x</string>
+    <string name="default_window_size_text">Default Window Size</string>
+    <string name="ime_switch_text">Show IME in window\nVIRTUAL_DISPLAY_FLAG_PUBLIC must be true</string>
 </resources>

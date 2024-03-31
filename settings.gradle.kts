@@ -5,4 +5,4 @@ pluginManagement {
 }
 
 include(":app", ":android-stub")
-rootProject.name = "YAMF"
+rootProject.name = "YAMFSquared"

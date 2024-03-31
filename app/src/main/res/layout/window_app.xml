@@ -64,7 +64,7 @@
                         android:layout_centerVertical="true"
                         android:background="?android:attr/selectableItemBackground"
                         android:padding="4dp"
-                        android:src="@drawable/back"
+                        android:src="@drawable/ic_back"
                         android:contentDescription="@string/back_desc" />
 
                     <ImageButton
@@ -75,7 +75,7 @@
                         android:layout_toStartOf="@id/ib_fullscreen"
                         android:background="?android:attr/selectableItemBackground"
                         android:padding="4dp"
-                        android:src="@drawable/minimize"
+                        android:src="@drawable/ic_minimize"
                         android:contentDescription="@string/minimize_desc" />
 
                     <ImageButton
@@ -87,7 +87,7 @@
                         android:layout_toStartOf="@id/ib_close"
                         android:background="?android:attr/selectableItemBackground"
                         android:padding="4dp"
-                        android:src="@drawable/maximize"
+                        android:src="@drawable/ic_maximize"
                         android:contentDescription="@string/fullscreen_desc" />
 
                     <ImageButton
@@ -117,7 +117,7 @@
             android:id="@+id/v_supporter"
             android:layout_width="200dp"
             android:layout_height="300dp"
-            android:layout_marginTop="28dp" />
+            android:layout_marginTop="40dp" />
     </FrameLayout>
 
 </FrameLayout>

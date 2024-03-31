@@ -34,11 +34,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.kyuubiran.ezxhelper.init.EzXHelperInit;
-import com.google.android.material.color.DynamicColors;
 
 import java.util.Objects;
 
-import io.github.duzhaokun123.yamf.R;
+import io.github.kaii_lb.yamfsquared.R;
 import io.github.qauxv.util.SavedInstanceStatePatchedClassReferencer;
 
 /**

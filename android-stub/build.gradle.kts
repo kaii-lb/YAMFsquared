@@ -26,7 +26,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
-    namespace = "io.github.duzhaokun123.android_stub"
+    namespace = "io.github.kaii_lb.android_stub"
 }
 
 dependencies {

@@ -17,7 +17,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "io.github.duzhaokun123.yamf"
+        applicationId = "io.github.kaii_lb.yamfsquared"
         minSdk = 33
         targetSdk = 34
         versionCode = 7
@@ -93,7 +93,7 @@ android {
     lint {
         abortOnError = false
     }
-    namespace = "io.github.duzhaokun123.yamf"
+    namespace = "io.github.kaii_lb.yamfsquared"
 }
 
 dependencies {

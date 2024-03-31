@@ -9,15 +9,34 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Material3.DayNight"
+        android:theme="@style/Theme.Material3.DynamicColors.DayNight"
         tools:ignore="DataExtractionRules">
-        
+
         <provider
-            android:authorities="io.github.duzhaokun123.yamf.ServiceProvider"
+            android:authorities="io.github.kaii_lb.yamfsquared.ServiceProvider"
             android:name=".manager.providers.ServiceProvider"
             android:exported="true"
             tools:ignore="ExportedContentProvider" />
-        
+
+        <activity android:name=".manager.ui.CurrentToFloatingActivity"
+            android:exported="true"
+            android:noHistory="true"
+            android:excludeFromRecents="true"
+            android:label="Current Window To Floating"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:launchMode="singleInstancePerTask">
+            <intent-filter>
+                <action android:name="android.intent.action.ASSIST"/>
+                <action android:name="android.intent.action.SEARCH_LONG_PRESS"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
+        <service android:name=".manager.services.CurrentToFloatingService"
+            android:exported="false"
+            android:label="Move To Floating Service">
+        </service>
+
         <activity
             android:name=".manager.ui.main.MainActivity"
             android:exported="true">
@@ -77,5 +96,4 @@
             android:name="xposedscope"
             android:resource="@array/xposed_scope" />
     </application>
-
 </manifest>
