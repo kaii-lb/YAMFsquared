@@ -59,7 +59,7 @@ object TipUtil {
     }
 
     fun showTip(context: Context?, t: Throwable) {
-        val msg = t.localizedMessage ?: t.message ?: "未知错误"
+        val msg = t.localizedMessage ?: t.message ?: "Unknown Error"
         if (context == null || (context is Activity && context.window.decorView.isVisible.not())) {
             showToast(msg)
             return

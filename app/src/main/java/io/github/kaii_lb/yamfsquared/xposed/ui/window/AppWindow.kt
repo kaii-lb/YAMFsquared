@@ -331,7 +331,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
     private fun updateTask(taskInfo: ActivityManager.RunningTaskInfo) {
         RunMainThreadQueue.add {
             if (taskInfo.isVisible.not()) {
-                delay(500) // fixme: 使用能直接确定可见性的方法
+                delay(500) // fixme: use a method that directly determines visibility
             }
             val taskDescription = Instances.activityTaskManager.getTaskDescription(taskInfo.taskId) ?: return@add
 
@@ -413,9 +413,6 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
         }
     }
 
-    /**
-     * 进行一个 rotation 度的旋转 而不是旋转到
-     */
     fun rotate(rotation: Int) {
         if (rotation == 1 || rotation == 3) {
             val t = halfHeight
