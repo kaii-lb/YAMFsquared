@@ -108,7 +108,8 @@
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:inputType="number" />
+                android:inputType="number"
+                android:textColor="?attr/colorOnSurface"/>
         </LinearLayout>
 
         <com.google.android.material.materialswitch.MaterialSwitch
@@ -137,7 +138,8 @@
                 android:id="@+id/btn_windowsfy"
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:textColor="?attr/colorOnSurface" />
         </LinearLayout>
 
         <LinearLayout
@@ -159,7 +161,8 @@
                 android:id="@+id/btn_surface"
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="?attr/colorOnSurface"/>
         </LinearLayout>
 
         <com.google.android.material.materialswitch.MaterialSwitch
@@ -230,7 +233,7 @@
             style="@style/Widget.Material3.CardView.Elevated"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="* Launcher might need to be restarted twice for hooks to take effect"
-            />
+            android:paddingBottom="40dp"
+            android:text="* Launcher might need to be restarted twice for hooks to take effect" />
     </LinearLayout>
 </ScrollView>

@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<voice-interaction-service xmlns:android="http://schemas.android.com/apk/res/android"
-    android:sessionService="io.github.kaii_lb.yamfsquared.manager.services.CurrentToFloatingService"
-    android:supportsAssist="true" />

@@ -349,7 +349,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
                 binding.ibClose.imageTintList = ColorStateList.valueOf(onStateBar)
 
                 val navigationBarColor = taskDescription.backgroundColor
-//                binding.rlButton.setBackgroundColor(navigationBarColor)
+                binding.rlButton.setBackgroundColor(navigationBarColor)
                 val onNavigationBar = if (MaterialColors.isColorLight(ColorUtils.compositeColors(navigationBarColor, backgroundColor)) xor ((context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES)) {
                     context.theme.getAttr(com.google.android.material.R.attr.colorOnPrimaryContainer).data
                 } else {

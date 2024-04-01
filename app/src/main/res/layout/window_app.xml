@@ -18,7 +18,7 @@
             style="@style/Widget.Material3.CardView.Elevated"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="#171717"
+            app:cardBackgroundColor="?attr/colorSurfaceContainer"
             app:cardCornerRadius="@dimen/app_card_radius"
             app:cardElevation="4dp">
 
@@ -39,15 +39,17 @@
                     android:layout_height="15dp"
                     android:layout_below="@id/surface"
                     android:layout_alignEnd="@id/surface"
-                    android:layout_alignParentStart="true">
+                    android:layout_alignParentStart="true"
+                    app:cardBackgroundColor="?attr/colorSurfaceContainer">
 
                     <ImageButton
                         android:id="@+id/ib_resize"
-                        android:layout_width="match_parent"
+                        android:layout_width="100dp"
                         android:layout_height="match_parent"
                         android:layout_alignParentEnd="true"
                         android:background="@null"
                         android:contentDescription="@string/resize_desc" />
+
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -55,7 +57,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:layout_alignEnd="@id/surface"
-                    android:paddingHorizontal="6dp">
+                    android:paddingHorizontal="6dp"
+                    app:cardBackgroundColor="?attr/colorSurfaceContainer">
 
                     <ImageButton
                         android:id="@+id/ib_back"
@@ -63,9 +66,9 @@
                         android:layout_height="30dp"
                         android:layout_centerVertical="true"
                         android:background="?android:attr/selectableItemBackground"
+                        android:contentDescription="@string/back_desc"
                         android:padding="4dp"
-                        android:src="@drawable/ic_back"
-                        android:contentDescription="@string/back_desc" />
+                        android:src="@drawable/ic_back" />
 
                     <ImageButton
                         android:id="@+id/ib_minimize"
@@ -74,9 +77,9 @@
                         android:layout_centerVertical="true"
                         android:layout_toStartOf="@id/ib_fullscreen"
                         android:background="?android:attr/selectableItemBackground"
+                        android:contentDescription="@string/minimize_desc"
                         android:padding="4dp"
-                        android:src="@drawable/ic_minimize"
-                        android:contentDescription="@string/minimize_desc" />
+                        android:src="@drawable/ic_minimize" />
 
                     <ImageButton
                         android:id="@+id/ib_fullscreen"
@@ -86,9 +89,9 @@
                         android:layout_marginStart="4dp"
                         android:layout_toStartOf="@id/ib_close"
                         android:background="?android:attr/selectableItemBackground"
+                        android:contentDescription="@string/fullscreen_desc"
                         android:padding="4dp"
-                        android:src="@drawable/ic_maximize"
-                        android:contentDescription="@string/fullscreen_desc" />
+                        android:src="@drawable/ic_maximize" />
 
                     <ImageButton
                         android:id="@+id/ib_close"
@@ -97,8 +100,8 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:background="?android:attr/selectableItemBackground"
-                        android:src="@drawable/ic_close_24"
-                        android:contentDescription="@string/close_desc" />
+                        android:contentDescription="@string/close_desc"
+                        android:src="@drawable/ic_close_24" />
                 </RelativeLayout>
             </RelativeLayout>
         </com.google.android.material.card.MaterialCardView>
