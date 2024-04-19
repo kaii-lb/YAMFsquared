@@ -33,6 +33,13 @@
                 <!--                    android:layout_height="300dp"-->
                 <!--                    android:layout_below="@id/rl_top" />-->
 
+                <ImageView
+                    android:id="@+id/app_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:srcCompat="@tools:sample/avatars"
+                    tools:visibility="gone" />
+
                 <RelativeLayout
                     android:id="@+id/rl_button"
                     android:layout_width="wrap_content"
@@ -40,7 +47,7 @@
                     android:layout_below="@id/surface"
                     android:layout_alignEnd="@id/surface"
                     android:layout_alignParentStart="true"
-                    app:cardBackgroundColor="?attr/colorSurfaceContainer">
+                    app:cardBackgroundColor="?attr/colorOnSurfaceInverse">
 
                     <ImageButton
                         android:id="@+id/ib_resize"
@@ -58,7 +65,7 @@
                     android:layout_height="40dp"
                     android:layout_alignEnd="@id/surface"
                     android:paddingHorizontal="6dp"
-                    app:cardBackgroundColor="?attr/colorSurfaceContainer">
+                    app:cardBackgroundColor="?attr/colorOnSurfaceInverse">
 
                     <ImageButton
                         android:id="@+id/ib_back"

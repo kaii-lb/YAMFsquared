@@ -76,25 +76,25 @@ fun moveToDisplay(context: Context, taskId: Int, componentName: ComponentName, u
             runCatching {
                 moveTask(taskId, displayId)
             }.onException {
-                TipUtil.showToast("can't move task $taskId")
+                TipUtil.showToast("Unable to move task $taskId")
             }
         }
         1 -> {
             runCatching {
                 startActivity(context, componentName, userId, displayId)
             }.onException {
-                TipUtil.showToast("can't start activity $componentName")
+                TipUtil.showToast("Unable to start activity $componentName")
             }
         }
         2 -> {
             runCatching {
                 moveTask(taskId, displayId)
             }.onException {
-                TipUtil.showToast("can't move task $taskId")
+                TipUtil.showToast("Unable to move task $taskId")
                 runCatching {
                     startActivity(context, componentName, userId, displayId)
                 }.onException {
-                    TipUtil.showToast("can't start activity $componentName")
+                    TipUtil.showToast("Unable to start activity $componentName")
                 }
             }
         }

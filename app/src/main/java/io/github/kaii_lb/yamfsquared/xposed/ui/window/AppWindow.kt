@@ -73,6 +73,9 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
     var displayId = -1
     var rotateLock = false
     var isMini = false
+    var isCollapsed = false
+    var lastWidth = 200
+    var lastHeight = 300
     private var halfWidth = 0
     private var halfHeight = 0
     lateinit var surfaceView: View
@@ -108,8 +111,8 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
         runCatching {
             binding = WindowAppBinding.inflate(LayoutInflater.from(context))
         }.onException { e ->
-            Log.e(TAG, "init: new window fail may you forget reboot", e)
-            TipUtil.showToast("new window failed\nmay you forget reboot")
+            Log.e(TAG, "Failed to create new window, did you reboot?", e)
+            TipUtil.showToast("Failed to create new window, did you reboot?")
         }.onSuccess {
             doInit()
         }
@@ -265,6 +268,10 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
         }
         binding.ibMinimize.setOnClickListener {
             changeMini()
+        }
+        binding.ibMinimize.setOnLongClickListener {
+            changeCollapsed()
+            true
         }
 
         virtualDisplay = Instances.displayManager.createVirtualDisplay("yamf${System.currentTimeMillis()}", 1080, 1920, densityDpi, null, flags)
@@ -433,7 +440,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
     }
 
     override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
-        if (isMini.not()) {
+        if (isMini.not() && isCollapsed.not()) {
             virtualDisplay.resize(width, height, densityDpi)
             surface.setDefaultBufferSize(width, height)
             halfWidth = width % 2
@@ -466,10 +473,11 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
     }
 
     private fun changeMini() {
-        if (surfaceView is SurfaceView) {
-            TipUtil.showToast("can't scale SurfaceView")
-            return
-        }
+//        if (surfaceView is SurfaceView) {
+//            TipUtil.showToast("Unable to scale surface view")
+//            return
+//        }
+        isCollapsed = false
         if (isMini) {
             isMini = false
             surfaceView.updateLayoutParams {
@@ -496,6 +504,41 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
             }
             binding.rlTop.visibility = View.GONE
             binding.rlButton.visibility = View.GONE
+            surfaceView.setOnTouchListener(null)
+            surfaceView.setOnGenericMotionListener(null)
+        }
+    }
+
+    private fun changeCollapsed() {
+//        if (surfaceView is SurfaceView) {
+//            TipUtil.showToast("Unable to scale surface view")
+//            return
+//        }
+        isMini = false
+        if (isCollapsed) {
+            isCollapsed = false
+            binding.vSupporter.updateLayoutParams {
+                width = virtualDisplay.display.width
+                height = virtualDisplay.display.height
+            }
+            surfaceView.layoutParams = binding.vSupporter.layoutParams
+
+            binding.rlTop.visibility = View.VISIBLE
+            binding.rlButton.visibility = View.VISIBLE
+            surfaceView.visibility = View.VISIBLE
+            binding.appIcon.visibility = View.GONE
+            surfaceView.setOnTouchListener(surfaceOnTouchListener)
+            surfaceView.setOnGenericMotionListener(surfaceOnGenericMotionListener)
+        } else {
+            isCollapsed = true
+            binding.vSupporter.updateLayoutParams {
+                width = 200
+                height = 200
+            }
+            binding.rlTop.visibility = View.GONE
+            binding.rlButton.visibility = View.GONE
+            surfaceView.visibility = View.GONE
+            binding.appIcon.visibility = View.VISIBLE
             surfaceView.setOnTouchListener(null)
             surfaceView.setOnGenericMotionListener(null)
         }
@@ -643,8 +686,9 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
             return true
         }
 
-        override fun onDoubleTap(e: MotionEvent): Boolean {
-            if (isMini) changeMini()
+        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+            if (isMini && !isCollapsed) changeMini()
+            else if (!isMini && isCollapsed) changeCollapsed()
             return true
         }
     })
