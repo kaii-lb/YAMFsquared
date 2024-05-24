@@ -61,7 +61,7 @@ class AppListWindow(val context: Context, val displayId: Int? = null) {
         }
     }
 
-    fun doInit() {
+    private fun doInit() {
         val params = WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.MATCH_PARENT,
