@@ -34,6 +34,7 @@ More my style floating windows!
 - Grab the latest APK from the [releases section](https://github.com/kaii-lb/YAMFsquared/releases)
 - Install it
 - Enable module in LSPosed
+- Go to Accessibility Settings and enable YAMF^2 accessibility service
 - Reboot
 
 ## "API" 
@@ -46,7 +47,7 @@ More my style floating windows!
 - Some apps scale abnormally at certain sizes
 
 ## TODO
-- Minimize to app icon 
+- Minimize to app icon (half done? long press minimize button to try)
 - Scale window (not resize)
 - Hide default virtual display window on pressing back button enough times
 - RtL support
