@@ -32,6 +32,20 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".manager.ui.OpenAppListActivity"
+            android:exported="true"
+            android:noHistory="true"
+            android:excludeFromRecents="true"
+            android:label="Open AppList in Windows"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:launchMode="singleInstancePerTask">
+            <intent-filter>
+                <action android:name="android.intent.action.ASSIST"/>
+                <action android:name="android.intent.action.SEARCH_LONG_PRESS"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
         <service android:name=".manager.services.CurrentToFloatingService"
             android:exported="false"
             android:label="Move To Floating Service">
