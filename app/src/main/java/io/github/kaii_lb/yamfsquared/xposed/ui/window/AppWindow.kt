@@ -29,6 +29,7 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.TextureView
 import android.view.View
+import android.view.WindowInsets
 import android.view.WindowManager
 import android.view.WindowManagerHidden
 import android.widget.FrameLayout
@@ -61,7 +62,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
     TextureView.SurfaceTextureListener, SurfaceHolder.Callback {
     companion object {
         const val TAG = "YAMF_AppWindow"
-        const val ACTION_RESET_ALL_WINDOW = "io.github.duzhaokun123.yamf.ui.window.action.ACTION_RESET_ALL_WINDOW"
+        const val ACTION_RESET_ALL_WINDOW = "io.github.kaii_lb.yamfsquared.ui.window.action.ACTION_RESET_ALL_WINDOW"
     }
 
     lateinit var binding: WindowAppBinding
@@ -74,8 +75,8 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
     var rotateLock = false
     var isMini = false
     var isCollapsed = false
-    var lastWidth = 200
-    var lastHeight = 300
+    private var lastWidth = 200
+    private var lastHeight = 300
     private var halfWidth = 0
     private var halfHeight = 0
     lateinit var surfaceView: View
@@ -472,6 +473,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
 
     }
 
+    // minimizes the floating window a bar-less only-content floating window
     private fun changeMini() {
 //        if (surfaceView is SurfaceView) {
 //            TipUtil.showToast("Unable to scale surface view")
@@ -481,26 +483,30 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
         if (isMini) {
             isMini = false
             surfaceView.updateLayoutParams {
-                width = virtualDisplay.display.width
-                height = virtualDisplay.display.height
+                width = lastWidth
+                height = lastHeight
             }
             binding.vSupporter.updateLayoutParams {
-                width = virtualDisplay.display.width
-                height = virtualDisplay.display.height
+                width = lastWidth
+                height = lastHeight
             }
             binding.rlTop.visibility = View.VISIBLE
             binding.rlButton.visibility = View.VISIBLE
             surfaceView.setOnTouchListener(surfaceOnTouchListener)
             surfaceView.setOnGenericMotionListener(surfaceOnGenericMotionListener)
         } else {
+            val pair = getWidthAndHeight()
+            lastWidth = pair.first
+            lastHeight = pair.second
+
             isMini = true
             surfaceView.updateLayoutParams {
-                width = virtualDisplay.display.width / 2
-                height = virtualDisplay.display.height / 2
+                width = lastWidth / 2
+                height = lastHeight / 2
             }
             binding.vSupporter.updateLayoutParams {
-                width = virtualDisplay.display.width / 2
-                height = virtualDisplay.display.height / 2
+                width = lastWidth / 2
+                height = lastHeight / 2
             }
             binding.rlTop.visibility = View.GONE
             binding.rlButton.visibility = View.GONE
@@ -509,6 +515,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
         }
     }
 
+    // minimizes the floating window to an app icon
     private fun changeCollapsed() {
 //        if (surfaceView is SurfaceView) {
 //            TipUtil.showToast("Unable to scale surface view")
@@ -518,10 +525,13 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
         if (isCollapsed) {
             isCollapsed = false
             binding.vSupporter.updateLayoutParams {
-                width = virtualDisplay.display.width
-                height = virtualDisplay.display.height
+                width = lastWidth
+                height = lastHeight
             }
-            surfaceView.layoutParams = binding.vSupporter.layoutParams
+            surfaceView.updateLayoutParams {
+                width = lastWidth
+                height = lastHeight
+            }
 
             binding.rlTop.visibility = View.VISIBLE
             binding.rlButton.visibility = View.VISIBLE
@@ -532,9 +542,14 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
         } else {
             isCollapsed = true
             binding.vSupporter.updateLayoutParams {
-                width = 200
-                height = 200
+                width = 100
+                height = 100
             }
+            surfaceView.updateLayoutParams {
+                width = 100
+                height = 100
+            }
+
             binding.rlTop.visibility = View.GONE
             binding.rlButton.visibility = View.GONE
             surfaceView.visibility = View.GONE
@@ -692,4 +707,14 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
             return true
         }
     })
+}
+
+fun getWidthAndHeight() : Pair<Int, Int> {
+    val windowMetrics = Instances.windowManager.currentWindowMetrics
+    val insets = windowMetrics.windowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
+
+    val width = windowMetrics.bounds.width() - insets.left - insets.right
+    val height = windowMetrics.bounds.height() - insets.top - insets.bottom
+
+    return Pair(width, height)
 }
