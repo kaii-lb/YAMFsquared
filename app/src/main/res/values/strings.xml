@@ -29,4 +29,5 @@
     <string name="default_window_size_text">Default Window Size</string>
     <string name="ime_switch_text">Show IME in window\nVIRTUAL_DISPLAY_FLAG_PUBLIC must be true</string>
     <string name="keep_alive_service_text">Keeps YAMF^2 alive in the background</string>
+    <string name="collapsed_app_icon">app icon for collapsed view</string>
 </resources>

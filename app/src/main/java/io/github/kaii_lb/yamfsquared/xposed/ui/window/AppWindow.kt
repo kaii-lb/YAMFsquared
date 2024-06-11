@@ -11,6 +11,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.ColorStateList
 import android.content.res.Configuration
+import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.SurfaceTexture
 import android.hardware.display.VirtualDisplay
@@ -32,6 +33,7 @@ import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.view.WindowManagerHidden
+import android.view.WindowMetrics
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import android.window.TaskSnapshot
@@ -56,6 +58,7 @@ import io.github.kaii_lb.yamfsquared.xposed.utils.TipUtil
 import io.github.kaii_lb.yamfsquared.xposed.utils.dpToPx
 import kotlinx.coroutines.delay
 import kotlin.math.sign
+
 
 @SuppressLint("ClickableViewAccessibility", "SetTextI18n")
 class AppWindow(val context: Context, private val densityDpi: Int, private val flags: Int, private val onVirtualDisplayCreated: ((Int) -> Unit)) :
@@ -357,7 +360,7 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
                 binding.ibClose.imageTintList = ColorStateList.valueOf(onStateBar)
 
                 val navigationBarColor = taskDescription.backgroundColor
-                binding.rlButton.setBackgroundColor(navigationBarColor)
+                binding.rlBottom.setBackgroundColor(navigationBarColor)
                 val onNavigationBar = if (MaterialColors.isColorLight(ColorUtils.compositeColors(navigationBarColor, backgroundColor)) xor ((context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES)) {
                     context.theme.getAttr(com.google.android.material.R.attr.colorOnPrimaryContainer).data
                 } else {
@@ -475,41 +478,70 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
 
     // minimizes the floating window a bar-less only-content floating window
     private fun changeMini() {
-//        if (surfaceView is SurfaceView) {
-//            TipUtil.showToast("Unable to scale surface view")
-//            return
-//        }
         isCollapsed = false
+
+       if (surfaceView is SurfaceView && isMini) {
+            isMini = false
+            (surfaceView as SurfaceView).scaleX = 2.0f
+            (surfaceView as SurfaceView).scaleY = 2.0f
+
+            isCollapsed = false
+            binding.vSupporter.updateLayoutParams {
+                width = virtualDisplay.display.width
+                height = virtualDisplay.display.height
+            }
+
+            binding.rlTop.visibility = View.VISIBLE
+            binding.rlBottom.visibility = View.VISIBLE
+            surfaceView.visibility = View.VISIBLE
+            binding.appIcon.visibility = View.GONE
+            surfaceView.setOnTouchListener(surfaceOnTouchListener)
+            surfaceView.setOnGenericMotionListener(surfaceOnGenericMotionListener)
+
+            return
+        }
+        else if (surfaceView is SurfaceView && !isMini) {
+           isMini = true
+           (surfaceView as SurfaceView).scaleX = 0.5f
+           (surfaceView as SurfaceView).scaleY = 0.5f
+           binding.vSupporter.updateLayoutParams {
+               width = virtualDisplay.display.width / 2
+               height = virtualDisplay.display.height / 2
+           }
+           binding.rlTop.visibility = View.GONE
+           binding.rlBottom.visibility = View.GONE
+           surfaceView.setOnTouchListener(null)
+           surfaceView.setOnGenericMotionListener(null)
+
+           return
+        }
+
         if (isMini) {
             isMini = false
             surfaceView.updateLayoutParams {
-                width = lastWidth
-                height = lastHeight
+                width = virtualDisplay.display.width
+                height = virtualDisplay.display.height
             }
             binding.vSupporter.updateLayoutParams {
-                width = lastWidth
-                height = lastHeight
+                width = virtualDisplay.display.width
+                height = virtualDisplay.display.height
             }
             binding.rlTop.visibility = View.VISIBLE
-            binding.rlButton.visibility = View.VISIBLE
+            binding.rlBottom.visibility = View.VISIBLE
             surfaceView.setOnTouchListener(surfaceOnTouchListener)
             surfaceView.setOnGenericMotionListener(surfaceOnGenericMotionListener)
         } else {
-            val pair = getWidthAndHeight()
-            lastWidth = pair.first
-            lastHeight = pair.second
-
             isMini = true
             surfaceView.updateLayoutParams {
-                width = lastWidth / 2
-                height = lastHeight / 2
+                width = virtualDisplay.display.width / 2
+                height = virtualDisplay.display.height / 2
             }
             binding.vSupporter.updateLayoutParams {
-                width = lastWidth / 2
-                height = lastHeight / 2
+                width = virtualDisplay.display.width / 2
+                height = virtualDisplay.display.height / 2
             }
             binding.rlTop.visibility = View.GONE
-            binding.rlButton.visibility = View.GONE
+            binding.rlBottom.visibility = View.GONE
             surfaceView.setOnTouchListener(null)
             surfaceView.setOnGenericMotionListener(null)
         }
@@ -517,42 +549,41 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
 
     // minimizes the floating window to an app icon
     private fun changeCollapsed() {
-//        if (surfaceView is SurfaceView) {
-//            TipUtil.showToast("Unable to scale surface view")
-//            return
-//        }
         isMini = false
+
         if (isCollapsed) {
             isCollapsed = false
             binding.vSupporter.updateLayoutParams {
-                width = lastWidth
-                height = lastHeight
+                width = virtualDisplay.display.width
+                height = virtualDisplay.display.height
             }
             surfaceView.updateLayoutParams {
-                width = lastWidth
-                height = lastHeight
+                width = virtualDisplay.display.width
+                height = virtualDisplay.display.height
             }
 
             binding.rlTop.visibility = View.VISIBLE
-            binding.rlButton.visibility = View.VISIBLE
+            binding.rlBottom.visibility = View.VISIBLE
             surfaceView.visibility = View.VISIBLE
+//            surfaceView.foregroundTintList = null
             binding.appIcon.visibility = View.GONE
             surfaceView.setOnTouchListener(surfaceOnTouchListener)
             surfaceView.setOnGenericMotionListener(surfaceOnGenericMotionListener)
         } else {
             isCollapsed = true
             binding.vSupporter.updateLayoutParams {
-                width = 100
-                height = 100
+                width = 200
+                height = 200
             }
-            surfaceView.updateLayoutParams {
-                width = 100
-                height = 100
-            }
+//            surfaceView.updateLayoutParams {
+//                width = 200
+//                height = 200
+//            }
 
             binding.rlTop.visibility = View.GONE
-            binding.rlButton.visibility = View.GONE
+            binding.rlBottom.visibility = View.GONE
             surfaceView.visibility = View.GONE
+//            surfaceView.foregroundTintList = ColorStateList.valueOf(Color.BLACK)
             binding.appIcon.visibility = View.VISIBLE
             surfaceView.setOnTouchListener(null)
             surfaceView.setOnGenericMotionListener(null)
@@ -709,12 +740,3 @@ class AppWindow(val context: Context, private val densityDpi: Int, private val f
     })
 }
 
-fun getWidthAndHeight() : Pair<Int, Int> {
-    val windowMetrics = Instances.windowManager.currentWindowMetrics
-    val insets = windowMetrics.windowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
-
-    val width = windowMetrics.bounds.width() - insets.left - insets.right
-    val height = windowMetrics.bounds.height() - insets.top - insets.bottom
-
-    return Pair(width, height)
-}

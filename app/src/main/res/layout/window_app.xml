@@ -38,10 +38,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     tools:srcCompat="@tools:sample/avatars"
-                    tools:visibility="gone" />
+                    tools:visibility="gone"
+                    android:contentDescription="@string/collapsed_app_icon" />
 
                 <RelativeLayout
-                    android:id="@+id/rl_button"
+                    android:id="@+id/rl_bottom"
                     android:layout_width="wrap_content"
                     android:layout_height="15dp"
                     android:layout_below="@id/surface"
@@ -65,7 +66,8 @@
                     android:layout_height="40dp"
                     android:layout_alignEnd="@id/surface"
                     android:paddingHorizontal="6dp"
-                    app:cardBackgroundColor="?attr/colorOnSurfaceInverse">
+                    app:cardBackgroundColor="?attr/colorOnSurfaceInverse"
+                    tools:ignore="UnknownId">
 
                     <ImageButton
                         android:id="@+id/ib_back"
